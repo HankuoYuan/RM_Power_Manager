@@ -40,6 +40,11 @@ _Noreturn void fsm_task(void *parameters) {
     pid_config();
     main_fsm.mode = normal_mode;
     while (1) {
+
+        if (referee_available() != 1) {
+            referee_info.chassis_power_limit = 50;
+        }
+
         switch (main_fsm.mode) {
             case charge_mode:
                 main_fsm.typology = charge_with_boost;
