@@ -21,7 +21,11 @@ _Noreturn void digital_tube_task(void *parameters) {
         mode_target_e current_mode = fsm_get_mode();
         typology_e current_typo = fsm_get_typology();
         if (last_mode != current_mode || last_typo != current_typo || running_timer_counter % 5 == 0) {
-            digital_tube_display_buffer[0] = current_typo + (16 * (running_timer_counter % 10 == 0));
+            unsigned char first_segment_display;
+            unsigned char capacitor_display = (unsigned char) power_info.capacitor_percent / 10;
+            first_segment_display = ((current_typo < 3) && (current_mode < 4)) ? capacitor_display
+                                                                               : current_typo;
+            digital_tube_display_buffer[0] = first_segment_display + (16 * (running_timer_counter % 10 == 0));
             digital_tube_display_buffer[1] = current_mode + (16 * (running_timer_counter % 10 == 0));
             tm1650_write_data(1, digital_tube_display_buffer);
         }
