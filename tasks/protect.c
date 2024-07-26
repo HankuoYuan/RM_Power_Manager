@@ -10,10 +10,10 @@ extern volatile unsigned char uart1_receive_buffer1[NUC_DMA_BUFFER_SIZE];
 static unsigned int usart2_receive_timeout_counter = 0;
 
 static struct protect_item_t {
-  unsigned char over_current_flag;
-  unsigned char under_voltage_flag;
-  unsigned char usart1_error_flag;
-  unsigned char usart2_error_flag;
+    unsigned char over_current_flag;
+    unsigned char under_voltage_flag;
+    unsigned char usart1_error_flag;
+    unsigned char usart2_error_flag;
 } protect_info = {0};
 
 unsigned char protect_get_info(void) {
@@ -43,12 +43,14 @@ _Noreturn void protect_task(void *parameters) {
         }
 
         /* Over power detect and protect. */
-        if (power_info.chassis_power > 240.0f && protect_info.over_current_flag == 0) {
+        if (power_info.chassis_power > 240.0f) {
             delayms(100);
             if (power_info.chassis_power > 240.0f) {
                 protect_info.over_current_flag = 1;
-                fsm_set_mode(all_off_mode);
+//                fsm_set_mode(all_off_mode);
             }
+        } else {
+            protect_info.over_current_flag = 0;
         }
 
         /* Under voltage detect and restart. */
